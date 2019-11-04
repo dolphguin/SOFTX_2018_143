@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,15 +59,19 @@ Foam::dynamicMotionSolverFvMesh::~dynamicMotionSolverFvMesh()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
+const Foam::motionSolver& Foam::dynamicMotionSolverFvMesh::motion() const
+{
+    return motionPtr_();
+}
+
+
 bool Foam::dynamicMotionSolverFvMesh::update()
 {
     fvMesh::movePoints(motionPtr_->newPoints());
 
     if (foundObject<volVectorField>("U"))
     {
-        volVectorField& U =
-            const_cast<volVectorField&>(lookupObject<volVectorField>("U"));
-        U.correctBoundaryConditions();
+        lookupObjectRef<volVectorField>("U").correctBoundaryConditions();
     }
 
     return true;

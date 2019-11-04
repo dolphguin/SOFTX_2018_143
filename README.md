@@ -40,14 +40,17 @@ Two unit cases illustrate the main bug fixes and several tutorial cases show pos
     - Ahmad Baniabedalruhman - Michigan Technological University ([2D refinement](http://faculty.yu.edu.jo/ahmad_a/Lists/Other%20Academic%20Activities/AllItems.aspx))
     - Stefan Batzdorf - Technical University Darmstadt ([`decomposeParLevel`](https://bitbucket.org/dynamicloadbalancing/dynamicloadbalancing/src/v-dev/OpenFOAM/applications/utilities/decomposeParLevel/decomposeParLevel.C))
     - Andrea Montorfano - Politecnico de Milano  (Discussions and hint for dontFlipPatch)
+    - myself - (by now, just porting code to OpenFOAM-6, OpenFOAM-7, testing stuff, and possibly include DLB-support for lagrangian particles from J.Peternel, that was originally inspired by the one by H.Jasak, H.Rusche &V.Vukcevic in [foam-extend]( https://github.com/Unofficial-Extend-Project-Mirror/foam-extend-foam-extend-4.0/tree/nextRelease ) )
 
 * * *
 
 ### How do I get set up? ###
 * Checkout the branch which fits your OpenFOAM installation
-    - v-dev (commit [OpenFOAM-dev](https://github.com/OpenFOAM/OpenFOAM-dev): `9dcdf23a6b94a8d792d94664ccfd0d7948a5c905` )
-    - v5.x (commit [OpenFOAM-dev](https://github.com/OpenFOAM/OpenFOAM-dev): `d06c3b390ac18dc2435ae87330038265a69c1c56` )
-    - v4.x (commit [OpenFOAM-dev](https://github.com/OpenFOAM/OpenFOAM-dev): `d214c8dfd5ba56dd442bae186fd4fb50dd35c338` )
+    - v-dev (commit [OpenFOAM-dev](https://github.com/OpenFOAM/OpenFOAM-dev): `9dcdf23a6b94a8d792d94664ccfd0d7948a5c905` <- 21 May 2018 )
+    - of6 (commit [OpenFOAM-6](https://github.com/OpenFOAM/OpenFOAM-6): `47517f2ebb1bdbacb8e3ce4b15110cd252953f87` <- 8 Jul 2019 )
+    - of7 (commit [OpenFOAM-7](https://github.com/OpenFOAM/OpenFOAM-7): `` <- ...pending work )
+    - v5.x (commit [OpenFOAM-5.x](https://github.com/OpenFOAM/OpenFOAM-5.x): `d06c3b390ac18dc2435ae87330038265a69c1c56` <- 15 May 2018 )
+    - v4.x (commit [OpenFOAM-4.x](https://github.com/OpenFOAM/OpenFOAM-4.x): `d214c8dfd5ba56dd442bae186fd4fb50dd35c338` <- 4 Sept 2017 )
 * Copy a patch into your OpenFOAM installation path
   ```cp -r OpenFOAM/dontFlipSurfaceVectorFields.patch $WM_PROJECT_DIR```
 * Have a short look inside the `*.patch` file. It is a minor change to your source code!

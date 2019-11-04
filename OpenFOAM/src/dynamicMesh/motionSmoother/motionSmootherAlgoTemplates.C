@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,12 +64,12 @@ void Foam::motionSmootherAlgo::checkConstraints
 
     forAllReverse(bFld, patchi)
     {
-        bFld[patchi].initEvaluate(Pstream::blocking);   // buffered
+        bFld[patchi].initEvaluate(Pstream::commsTypes::blocking);   // buffered
     }
 
     forAllReverse(bFld, patchi)
     {
-        bFld[patchi].evaluate(Pstream::blocking);
+        bFld[patchi].evaluate(Pstream::commsTypes::blocking);
     }
 
 
@@ -213,7 +213,7 @@ Foam::motionSmootherAlgo::avg
 
     forAll(res, pointi)
     {
-        if (mag(sumWeight[pointi]) < VSMALL)
+        if (mag(sumWeight[pointi]) < vSmall)
         {
             // Unconnected point. Take over original value
             res[pointi] = fld[pointi];

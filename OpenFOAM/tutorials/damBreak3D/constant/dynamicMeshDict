@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  4.x                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -33,13 +33,13 @@ multiCritRefinementControls
 
     fields
     (
-        alpha.water
+        /*alpha.water
         {
             minValue  0.1;
             maxValue  1.1;
             refineLevel 2;
             nAddLayers  0;
-        }
+        }*/
     );
     
     gradients
@@ -52,10 +52,21 @@ multiCritRefinementControls
     
     regions
     (
-        boxToCell
+        /*boxToCell
         {
             minLevel 1;
             box  (0.325 0.325 -0.05) (0.675 0.675 0.3);
+        }*/
+        boxToCell
+        {
+            minLevel 2;
+            box (-1 -1 -1)(0.4 0.1 0.4);
+        }
+
+        boxToCell
+        {
+            minLevel 1;
+            box (0.21 -1.01 0.31)(1.01 0.11 0.61);
         }
     );
 }
@@ -97,6 +108,7 @@ dynamicRefineFvMeshCoeffs
         (nHatf none)
         (rhoPhi none)
         (alphaPhi none)
+        (alphaPhi0.water none)
         (ghf none)
     );
 

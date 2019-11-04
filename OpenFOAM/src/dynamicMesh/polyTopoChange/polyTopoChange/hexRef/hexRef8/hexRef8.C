@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,6 @@ License
 #include "refinementData.H"
 #include "refinementDistanceData.H"
 #include "degenerateMatcher.H"
-
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -830,7 +829,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
         // This needs doing for if people do not write binary and we slowly
         // get differences.
 
-        pointField edgeMids(mesh_.nEdges(), point(-GREAT, -GREAT, -GREAT));
+        pointField edgeMids(mesh_.nEdges(), point(-great, -great, -great));
 
         forAll(edgeMidPoint, edgeI)
         {
@@ -845,7 +844,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
             mesh_,
             edgeMids,
             maxEqOp<vector>(),
-            point(-GREAT, -GREAT, -GREAT)
+            point(-great, -great, -great)
         );
 
 
@@ -1016,7 +1015,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
         pointField bFaceMids
         (
             mesh_.nFaces()-mesh_.nInternalFaces(),
-            point(-GREAT, -GREAT, -GREAT)
+            point(-great, -great, -great)
         );
 
         forAll(bFaceMids, i)

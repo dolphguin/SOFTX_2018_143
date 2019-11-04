@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -375,11 +375,11 @@ Foam::scalar Foam::hexRef::getLevel0EdgeLength() const
     // Determine minimum edge length per refinement level
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    const scalar GREAT2 = sqr(GREAT);
+    const scalar great2 = sqr(great);
 
     label nLevels = gMax(cellLevel_)+1;
 
-    scalarField typEdgeLenSqr(nLevels, GREAT2);
+    scalarField typEdgeLenSqr(nLevels, great2);
 
 
     // 1. Look only at edges surrounded by cellLevel cells only.
@@ -462,7 +462,7 @@ Foam::scalar Foam::hexRef::getLevel0EdgeLength() const
     //    edges sized according to highest celllevel)
     //    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    scalarField maxEdgeLenSqr(nLevels, -GREAT2);
+    scalarField maxEdgeLenSqr(nLevels, -great2);
 
     forAll(cellLevel_, celli)
     {
@@ -496,7 +496,7 @@ Foam::scalar Foam::hexRef::getLevel0EdgeLength() const
 
     forAll(typEdgeLenSqr, levelI)
     {
-        if (typEdgeLenSqr[levelI] == GREAT2 && maxEdgeLenSqr[levelI] >= 0)
+        if (typEdgeLenSqr[levelI] == great2 && maxEdgeLenSqr[levelI] >= 0)
         {
             typEdgeLenSqr[levelI] = maxEdgeLenSqr[levelI];
         }
@@ -516,7 +516,7 @@ Foam::scalar Foam::hexRef::getLevel0EdgeLength() const
     {
         scalar lenSqr = typEdgeLenSqr[levelI];
 
-        if (lenSqr < GREAT2)
+        if (lenSqr < great2)
         {
             level0Size = Foam::sqrt(lenSqr)*(1<<levelI);
 
@@ -1474,7 +1474,7 @@ Foam::hexRef::hexRef(const polyMesh& mesh, const bool readHistory)
         // All cells visible if not read or readHistory = false
         (readHistory ? mesh_.nCells() : 0)
     ),
-    faceRemover_(mesh_, GREAT),     // merge boundary faces wherever possible
+    faceRemover_(mesh_, great),     // merge boundary faces wherever possible
     savedPointLevel_(0),
     savedCellLevel_(0)
 {
@@ -1604,7 +1604,7 @@ Foam::hexRef::hexRef
         ),
         history
     ),
-    faceRemover_(mesh_, GREAT),     // merge boundary faces wherever possible
+    faceRemover_(mesh_, great),     // merge boundary faces wherever possible
     savedPointLevel_(0),
     savedCellLevel_(0)
 {
@@ -1714,7 +1714,7 @@ Foam::hexRef::hexRef
         labelList(0),
         false
     ),
-    faceRemover_(mesh_, GREAT),     // merge boundary faces wherever possible
+    faceRemover_(mesh_, great),     // merge boundary faces wherever possible
     savedPointLevel_(0),
     savedCellLevel_(0)
 {
@@ -3597,16 +3597,16 @@ const Foam::cellShapeList& Foam::hexRef::cellShapes() const
 
 
 // Write refinement to polyMesh directory.
-bool Foam::hexRef::write() const
+bool Foam::hexRef::write(const bool valid) const
 {
     bool writeOk =
-        cellLevel_.write()
-     && pointLevel_.write()
-     && level0Edge_.write();
+        cellLevel_.write(valid)
+     && pointLevel_.write(valid)
+     && level0Edge_.write(valid);
 
     if (history_.active())
     {
-        writeOk = writeOk && history_.write();
+        writeOk = writeOk && history_.write(valid);
     }
 
     return writeOk;

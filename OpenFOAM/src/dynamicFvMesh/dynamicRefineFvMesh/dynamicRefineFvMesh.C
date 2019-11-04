@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -251,7 +251,7 @@ Foam::dynamicRefineFvMesh::refine
     meshCutter_->setRefinement(cellsToRefine, meshMod);
 
     // Create mesh (with inflation), return map from old to new mesh.
-    //autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, true);
+    // autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, true);
     autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, false);
 
     Info<< "Refined from "
@@ -519,7 +519,7 @@ Foam::dynamicRefineFvMesh::unrefine
 
 
     // Change mesh and generate map.
-    //autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, true);
+    // autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, true);
     autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, false);
 
     Info<< "Unrefined from "
@@ -664,7 +664,7 @@ Foam::dynamicRefineFvMesh::unrefine
 Foam::scalarField
 Foam::dynamicRefineFvMesh::maxPointField(const scalarField& pFld) const
 {
-    scalarField vFld(nCells(), -GREAT);
+    scalarField vFld(nCells(), -great);
 
     forAll(pointCells(), pointi)
     {
@@ -678,10 +678,11 @@ Foam::dynamicRefineFvMesh::maxPointField(const scalarField& pFld) const
     return vFld;
 }
 
+
 Foam::scalarField
 Foam::dynamicRefineFvMesh::maxCellField(const volScalarField& vFld) const
 {
-    scalarField pFld(nPoints(), -GREAT);
+    scalarField pFld(nPoints(), -great);
 
     forAll(pointCells(), pointi)
     {
@@ -699,7 +700,7 @@ Foam::dynamicRefineFvMesh::maxCellField(const volScalarField& vFld) const
 Foam::scalarField
 Foam::dynamicRefineFvMesh::minCellField(const volScalarField& vFld) const
 {
-    scalarField pFld(nPoints(), -GREAT);
+    scalarField pFld(nPoints(), -great);
 
     forAll(pointCells(), pointi)
     {
@@ -1577,7 +1578,7 @@ Foam::dynamicRefineFvMesh::~dynamicRefineFvMesh()
 
 bool Foam::dynamicRefineFvMesh::update()
 {
-    // Re-read dictionary. Choosen since usually -small so trivial amount
+    // Re-read dictionary. Chosen since usually -small so trivial amount
     // of time compared to actual refinement. Also very useful to be able
     // to modify on-the-fly.
     dictionary refineDict
@@ -1665,7 +1666,7 @@ bool Foam::dynamicRefineFvMesh::update()
         const scalar unrefineLevel = refineDict.lookupOrDefault<scalar>
         (
             "unrefineLevel",
-            GREAT
+            great
         );
         const label nBufferLayers =
             readLabel(refineDict.lookup("nBufferLayers"));
@@ -1775,7 +1776,7 @@ bool Foam::dynamicRefineFvMesh::update()
 
         if ((nRefinementIterations_ % 10) == 0)
         {
-            // Compact refinement history occassionally (how often?).
+            // Compact refinement history occasionally (how often?).
             // Unrefinement causes holes in the refinementHistory.
             const_cast<refinementHistory&>(meshCutter()->history()).compact();
         }
@@ -1798,7 +1799,8 @@ bool Foam::dynamicRefineFvMesh::writeObject
 (
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
-    IOstream::compressionType cmp
+    IOstream::compressionType cmp,
+    const bool valid
 ) const
 {
     // Force refinement data to go to the current time directory.
@@ -1806,8 +1808,8 @@ bool Foam::dynamicRefineFvMesh::writeObject
 
     bool writeOk =
     (
-        dynamicFvMesh::writeObject(fmt, ver, cmp)
-     && meshCutter_->write()
+        dynamicFvMesh::writeObject(fmt, ver, cmp, valid)
+     && meshCutter_->write(valid)
     );
 
     if (dumpLevel_)

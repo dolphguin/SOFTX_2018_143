@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -111,17 +111,19 @@ Foam::componentDisplacementMotionSolver::componentDisplacementMotionSolver
             << "Number of points in mesh " << mesh.nPoints()
             << " differs from number of points " << points0_.size()
             << " read from file "
-            <<
-                IOobject
+            <<  typeFilePath<pointIOField>
                 (
-                    "points",
-                    mesh.time().constant(),
-                    polyMesh::meshSubDir,
-                    mesh,
-                    IOobject::MUST_READ,
-                    IOobject::NO_WRITE,
-                    false
-                ).filePath()
+                    IOobject
+                    (
+                        "points",
+                        mesh.time().constant(),
+                        polyMesh::meshSubDir,
+                        mesh,
+                        IOobject::MUST_READ,
+                        IOobject::NO_WRITE,
+                        false
+                    )
+                )
             << exit(FatalError);
     }
 }

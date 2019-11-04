@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -152,7 +152,7 @@ void Foam::multiCritRefinement::applyCritEntries(word critType, dictionary critD
     if (critType == "grad")
     {
         //- get a handle of the field
-        const volVectorField& fld = mesh_.lookupObject<volVectorField>(fldName);
+        const volScalarField& fld = mesh_.lookupObject<volScalarField>(fldName);
 
         Field<scalar> cubeRtV = Foam::pow(mesh_.V(),1.0/3.0);
 
@@ -202,10 +202,10 @@ void Foam::multiCritRefinement::applyCritEntries(word critType, dictionary critD
         for(label j=0; j < nAddLayers; j++)
         {
             //- select the area with targetLevel==refineLevel
-            volScalarField finest = pos(tLevel - refineLevel + SMALL);
+            volScalarField finest = pos(tLevel - refineLevel + small);
 
             //- add +1 to targetLevel on the enlarged stencil
-            tLevel += pos( fvc::average(fvc::interpolate(finest) - SMALL)) - finest;
+            tLevel += pos( fvc::average(fvc::interpolate(finest) - small)) - finest;
         }
 
         //- copy the new results onto the target labelList
@@ -491,7 +491,7 @@ void Foam::multiCritRefinement::updateRefinementField()
                         isInterface[cellI] += sum;
                     }
                 }
-                isInterface = pos(isInterface - SMALL);
+                isInterface = pos(isInterface - small);
 
                 // add outer refinement layers
                 for(label i=0; i < outerRefLayers; i++)
@@ -516,7 +516,7 @@ void Foam::multiCritRefinement::updateRefinementField()
                         isInterface[cellI] += sum;
                     }
                 }
-                isInterface = pos(isInterface - SMALL);
+                isInterface = pos(isInterface - small);
 
                 forAll(isInterface, cellI)
                 {
@@ -606,7 +606,7 @@ void Foam::multiCritRefinement::updateRefinementField()
 
             for (label i=0; i<nBufferLayers_; i++)
             {
-                blockedLevel = max(blockedLevel, pos(fvc::average(fvc::interpolate(blockedLevel)) - SMALL)*(currLayer-1));
+                blockedLevel = max(blockedLevel, pos(fvc::average(fvc::interpolate(blockedLevel)) - small)*(currLayer-1));
             }
 
             labelList blockLev(blockedLevel.internalField().size(), 0);
