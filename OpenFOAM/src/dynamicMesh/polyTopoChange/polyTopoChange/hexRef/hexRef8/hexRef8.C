@@ -692,7 +692,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
         checkMesh();
         // Cannot call checkRefinementlevels since hanging points might
         // get triggered by the mesher after subsetting.
-        //checkRefinementLevels(-1, labelList(0));
+        // checkRefinementLevels(-1, labelList(0));
     }
 
     // Clear any saved point/cell data.
@@ -1346,7 +1346,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
                     // Convert dynamiclist to face.
                     newFace.transfer(faceVerts);
 
-                    //Pout<< "Split face:" << facei << " verts:" << f
+                    // Pout<< "Split face:" << facei << " verts:" << f
                     //    << " into quad:" << newFace << endl;
 
                     // Get new owner/neighbour
@@ -1722,7 +1722,7 @@ Foam::labelList Foam::hexRef8::consistentUnrefinement
 
     // Loop, modifying pointsToUnrefine, until no more changes to due to 2:1
     // conflicts.
-    // maxSet = false : unselect points to refine
+    // maxSet = false : deselect points to refine
     // maxSet = true: select points to refine
 
     // Maintain boolList for pointsToUnrefine and cellsToUnrefine
@@ -1934,6 +1934,7 @@ Foam::labelList Foam::hexRef8::consistentUnrefinement
     return newPointsToUnrefine;
 }
 
+
 void Foam::hexRef8::setUnrefinement
 (
     const labelList& splitElemLabels,
@@ -2055,7 +2056,7 @@ void Foam::hexRef8::setUnrefinement
 
         // Check that the lowest numbered pCells is the master of the region
         // (should be guaranteed by directRemoveFaces)
-        //if (debug)
+        // if (debug)
         {
             label masterCelli = min(pCells);
 

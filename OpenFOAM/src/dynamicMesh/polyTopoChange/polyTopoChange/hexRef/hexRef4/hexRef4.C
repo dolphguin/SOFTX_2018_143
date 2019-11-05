@@ -48,7 +48,6 @@ License
 #include "refinementDistanceData.H"
 #include "degenerateMatcher.H"
 
-
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
@@ -58,6 +57,7 @@ namespace Foam
     addToRunTimeSelectionTable(hexRef, hexRef4, levelsHist);
     addToRunTimeSelectionTable(hexRef, hexRef4, levels);
 }
+
 
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
@@ -133,7 +133,6 @@ Foam::label Foam::hexRef4::getAnchorCell
         return celli;
     }
 }
-
 
 // Internal faces are one per edge between anchor points. So one per midPoint
 // between the anchor points. Here we store the information on the midPoint
@@ -770,7 +769,7 @@ Foam::labelListList Foam::hexRef4::setRefinement
         checkMesh();
         // Cannot call checkRefinementlevels since hanging points might
         // get triggered by the mesher after subsetting.
-        //checkRefinementLevels(-1, labelList(0));
+        // checkRefinementLevels(-1, labelList(0));
     }
 
     // Clear any saved point/cell data.
@@ -803,6 +802,7 @@ Foam::labelListList Foam::hexRef4::setRefinement
     // -1 : not refined
     // >=0: label of mid point.
     labelList cellMidPoint(mesh_.nCells(), -1);
+
     forAll(cellLabels, i)
     {
         label celli = cellLabels[i];
@@ -876,13 +876,16 @@ Foam::labelListList Foam::hexRef4::setRefinement
         if (cellMidPoint[celli] >= 0)
         {
             const labelList& cEdges = mesh_.cellEdges(celli);
+
             forAll(cEdges, i)
             {
                 label edgeI = cEdges[i];
+
                 const edge& e = mesh_.edges()[edgeI];
+
                 if
                 (
-                 isDivisibleEdge[edgeI]
+                    isDivisibleEdge[edgeI]
                  && pointLevel_[e[0]] <= cellLevel_[celli]
                  && pointLevel_[e[1]] <= cellLevel_[celli]
                 )
@@ -1125,6 +1128,7 @@ Foam::labelListList Foam::hexRef4::setRefinement
                 // point label.
 
                 const face& f = mesh_.faces()[facei];
+
                 faceMidPoint[facei] = meshMod.setAction
                 (
                     polyAddPoint
@@ -1192,8 +1196,10 @@ Foam::labelListList Foam::hexRef4::setRefinement
 
     // Per cell the 8 corner points.
     labelListList cellAnchorPoints(mesh_.nCells());
+
     {
         labelList nAnchorPoints(mesh_.nCells(), 0);
+
         forAll(cellMidPoint, celli)
         {
             if (cellMidPoint[celli] >= 0)
@@ -1236,7 +1242,6 @@ Foam::labelListList Foam::hexRef4::setRefinement
                 }
             }
         }
-
 
         forAll(cellMidPoint, celli)
         {
@@ -1385,6 +1390,7 @@ Foam::labelListList Foam::hexRef4::setRefinement
             // Has original facei been used (three faces added, original gets
             // modified)
             bool modifiedFace = false;
+
             label anchorLevel = faceAnchorLevel[facei];
 
             if(isDivisibleFace[facei])
@@ -1854,6 +1860,7 @@ Foam::labelListList Foam::hexRef4::setRefinement
     return refinedCells;
 }
 
+
 Foam::labelList Foam::hexRef4::selectUnrefineElems
 (
     const scalar unrefineLevel,
@@ -1922,6 +1929,7 @@ Foam::labelList Foam::hexRef4::selectUnrefineElems
 
     return consistentSet;
 }
+
 
 Foam::labelList Foam::hexRef4::consistentUnrefinement
 (
@@ -2160,6 +2168,7 @@ Foam::labelList Foam::hexRef4::consistentUnrefinement
     return newEdgesToUnrefine;
 }
 
+
 void Foam::hexRef4::calcFaceToSplitPoint
 (
     const labelList& splitElems,
@@ -2195,6 +2204,7 @@ void Foam::hexRef4::calcFaceToSplitPoint
         }
     }
 }
+
 
 Foam::labelList Foam::hexRef4::getSplitElems() const
 {
@@ -2337,6 +2347,7 @@ Foam::labelList Foam::hexRef4::getSplitElems() const
 
     return splitEdges;
 }
+
 
 void Foam::hexRef4::setUnrefinement
 (
@@ -2531,6 +2542,5 @@ void Foam::hexRef4::setUnrefinement
 
     // history_.updateMesh will take care of truncating.
 }
-
 
 // ************************************************************************* //

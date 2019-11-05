@@ -141,7 +141,9 @@ public:
             const scalar level0Edge = -great
         );
 
+
     // Member Functions
+
 
         // Refinement
 
@@ -163,6 +165,7 @@ public:
                 const labelList& cells,
                 polyTopoChange&
             );
+
 
         // Unrefinement
             //- Return the mid elems in top-level split cells
@@ -200,6 +203,7 @@ public:
                 const labelList& splitElems,
                 Map<label>& faceToSplitPoint
             );
+
 
 };
 

@@ -77,6 +77,7 @@ class mapDistributePolyMesh;
 
 class hexRef
 {
+
 protected:
     // Protected data
 
