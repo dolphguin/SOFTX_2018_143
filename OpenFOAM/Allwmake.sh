@@ -18,22 +18,22 @@ cd -
 
 cd applications/utilities/meshUpdater/
 wmake
-cd - 
+cd -
 
 # linked vs the original OF dynamicMesh library
 cd applications/utilities/meshUpdaterOrig/
 wmake
-cd - 
+cd -
 
 cd applications/utilities/initSurfaceFields/
 wmake
-cd - 
+cd -
 
 cd applications/utilities/decomposeParLevel/
 wmake
-cd - 
+cd -
 
 cd applications/utilities/reconstructParLevel/
 wmake
-cd - 
+cd -
 
