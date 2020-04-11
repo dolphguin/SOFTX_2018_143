@@ -1,38 +1,34 @@
-#!/bin/sh
+#!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
+#source $PWD/etc/bashrc
+source $PWD/bash_settings
 
 cd ${0%/*} || exit 1
 
 
-cd src/dynamicMesh/
-wclean
-cd -
+cleanApplication()
+{
+    wclean $1
+    if [ -d $1/Make/linux* ]; then
+        cleanApplication $1/Make/linux*
+    fi
+}
 
-cd src/dynamicFvMesh/
-wclean
-cd -
-
-cd src/twoPhaseProperties/
-wclean
-cd -
-
-cd applications/utilities/meshUpdater/
-wclean
-cd -
-
-# linked vs the original OF dynamicMesh library
-cd applications/utilities/meshUpdaterOrig/
-wclean
-cd -
-
-cd applications/utilities/initSurfaceFields/
-wclean
-cd -
-
-cd applications/utilities/decomposeParLevel/
-wclean
-cd -
-
-cd applications/utilities/reconstructParLevel/
-wclean
-cd -
-
+for MODEL in \
+"src/dynamicMesh" \
+"src/dynamicFvMesh" \
+"src/twoPhaseProperties" \
+"applications/utilities/meshUpdater" \
+"applications/utilities/meshUpdaterOrig" \
+"applications/utilities/initSurfaceFields" \
+"applications/utilities/decomposeParLevel" \
+"applications/utilities/reconstructParLevel"
+do
+    if [ -d $MODEL ]; then
+        cleanApplication $MODEL
+    fi
+done

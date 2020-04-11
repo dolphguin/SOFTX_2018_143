@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application 	interDyMFoam;
+application     interFoam;
 
 startFrom       latestTime;
 
@@ -52,7 +52,7 @@ maxAlphaCo      0.40;
 
 maxDeltaT       0.0001;
 
-//libs			("libOpenFOAM.so");
+//libs("libOpenFOAM.so");
 
 
 // ************************************************************************* //

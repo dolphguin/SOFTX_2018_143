@@ -1,39 +1,35 @@
-#!/bin/sh
+#!/bin/bash
 
-cd ${0%/*} || exit 1
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
+#source $PWD/etc/bashrc
+source $PWD/bash_settings
+
+./config.sh
+
+#cd ${0%/*} || exit 1
+
+for MODEL in \
+"src/dynamicMesh" \
+"src/dynamicFvMesh" \
+"src/twoPhaseProperties"
+do
+    if [[ -d $MODEL ]]; then
+        wmake -j $1 libso $MODEL
+    fi
+done
 
 
-
-cd src/dynamicMesh/
-wmake libso
-cd -
-
-cd src/dynamicFvMesh/
-wmake libso
-cd -
-
-cd src/twoPhaseProperties/
-wmake libso
-cd -
-
-cd applications/utilities/meshUpdater/
-wmake
-cd -
-
-# linked vs the original OF dynamicMesh library
-cd applications/utilities/meshUpdaterOrig/
-wmake
-cd -
-
-cd applications/utilities/initSurfaceFields/
-wmake
-cd -
-
-cd applications/utilities/decomposeParLevel/
-wmake
-cd -
-
-cd applications/utilities/reconstructParLevel/
-wmake
-cd -
-
+for MODEL in \
+"applications/utilities/meshUpdater" \
+"applications/utilities/meshUpdaterOrig" \
+"applications/utilities/initSurfaceFields" \
+"applications/utilities/decomposeParLevel" \
+"applications/utilities/reconstructParLevel"
+do
+    if [[ -d $MODEL ]]; then
+        wmake -j $1 $MODEL
+    fi
+done

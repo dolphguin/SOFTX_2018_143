@@ -54,8 +54,7 @@ maxDeltaT       1;
 
 libs
 (
-
-   "libdynamicFvMesh.so"
+    "libdynamicFvMesh.so"
 );
 
 // ************************************************************************* //

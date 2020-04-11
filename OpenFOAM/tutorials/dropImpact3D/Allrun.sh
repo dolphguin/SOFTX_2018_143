@@ -1,11 +1,16 @@
 #!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 #clean case
-cleanCase.sh
+../../scripts/cleanCase.sh
 
 # restore 0
 cp -r org/ 0
@@ -18,8 +23,8 @@ wmake init3dField
 # initialize field and set refinement repeatedly (maxRefLevel+1)
 for count in {1..3}
 do
-    init3dField/init3dField
-    meshUpdater -overwrite
+    init3dField/init3dField > log.$count.init3dField
+    meshUpdater -overwrite > log.$count.meshUpdater
 done
 
 # decompose with constraint refinementHistory
@@ -36,7 +41,7 @@ done
 touch "${PWD##*/}.foam"
 
 # run the solver
-echo "run interDymFoam on 4 procs"
-mpirun -np 4 interDyMFoam -parallel > log.interDyMFoam
+echo "run interFoam on 4 procs"
+mpirun -np 4 interFoam -parallel > log.interFoam
 
 #------------------------------------------------------------------------------

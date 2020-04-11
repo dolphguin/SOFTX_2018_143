@@ -1,11 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # run from this directory
 
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 #clean case
-cleanCase.sh
+../../scripts/cleanCase.sh
 
 # restore 0
 cp -r org/ 0
@@ -16,15 +21,15 @@ runApplication blockMesh
 for count in {1..3}
 do
 
-	echo "initialize fields and refine iteration: $c"
-	setFields > log.setFields
+    echo "initialize fields and refine iteration: $c"
+    setFields > log.$count.setFields
 
-	meshUpdater -overwrite
+    meshUpdater -overwrite > log.$count.meshUpdater
 done
 
 # decompose with constraint refinementHistory
 runApplication decomposePar
-decomposeParLevel
+runApplication decomposeParLevel
 
 # Make constant/polyMesh folders
 for fold in $(ls -d processor*)
@@ -37,5 +42,5 @@ done
 touch "${PWD##*/}.foam"
 
 #run the solver
-echo "run interDyMFoam on 4 procs"
-mpirun -np 4 interDyMFoam -parallel > log.interDyMFoam
+echo "run interFoam on 4 procs"
+mpirun -np 4 interFoam -parallel > log.interFoam

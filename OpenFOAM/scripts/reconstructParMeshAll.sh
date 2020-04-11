@@ -5,7 +5,7 @@
 #- Does all the reconstruction steps
 #- Spares already reconstructed steps
 #- Deletes unfinished reconstructed time steps on abortion with ctrl+c
-# 
+#
 #- Options: -latestTime, -time 0.01
 
 # checks if a string is contained by a list
@@ -20,13 +20,13 @@ trap ctrl_c INT
 
 # deletes incomplete last time step
 function ctrl_c() {
-		echo ""
+    echo ""
     echo "** Trapped CTRL-C"
     echo ""
-  
+
     if [[ $f0 -eq 1 ]] &&  [[ $f3 -eq 0 ]] ; then
-    	rm -r ${timeStep} >/dev/null 2>&1;
-    	echo "incomplete time step ${timeStep} deleted"
+        rm -r ${timeStep} >/dev/null 2>&1;
+        echo "incomplete time step ${timeStep} deleted"
     fi
 
     exit
@@ -35,57 +35,54 @@ function ctrl_c() {
 #- script options
 function options()
 {
+    local args="$@"
 
-	local args="$@"
+    if [[ $args == *"-latestTime"* ]] || [[ $args == *"-time"* ]]; then
 
-	if [[ $args == *"-latestTime"* ]] ||
-	   [[ $args == *"-time"* ]]; then
+        if [[ $args == *"-latestTime"* ]]; then
+            # find latestTime for output
+            cd processor0
+            latestTime=`ls -d [0-9]* | sort -g | tail -1`;
+            cd -
+            echo "reconstructing: $latestTime"
+        else
+            echo "reconstructing: $@"
+        fi
 
+        # deletes -fields entry which is not available nor necessary in reconstructParMesh
+        parMeshArg=`echo "$args" | sed 's/-fields[^)]*)//gi'`
 
-	        if [[ $args == *"-latestTime"* ]]; then
-			# find latestTime for output
-			cd processor0
-				latestTime=`ls -d [0-9]* | sort -g | tail -1`; 
-			cd -
-			echo "reconstructing: $latestTime"
-		else
-			echo "reconstructing: $@"	
-		fi
+        # start reconstruction
+        f0=1;f3=0;
+            reconstructParMesh $parMeshArg >/dev/null 2>&1;
 
-		# deletes -fields entry which is not available nor necessary in reconstructParMesh
-		parMeshArg=`echo "$args" | sed 's/-fields[^)]*)//gi'`
+            reconstructPar "$@" >/dev/null 2>&1;
 
-		# start reconstruction
-		f0=1;f3=0;
-		reconstructParMesh $parMeshArg >/dev/null 2>&1; 
-
-    	reconstructPar "$@" >/dev/null 2>&1;
-
-    	reconstructParLevel "$@" >/dev/null 2>&1;
-    	f3=1;f0=0;
-    	exit
-	fi
+            reconstructParLevel "$@" >/dev/null 2>&1;
+        f3=1;f0=0;
+        exit
+    fi
 }
 
 #- reconstruct time single time steps
 function reconstructTimeStep()
 {
-	local tS=$1
+    local tS=$1
 
-	local args="$@"
+    local args="$@"
 
-	# deletes -fields entry which is not available nor necessary in reconstructParMesh
-	parMeshArg=`echo "$args" | sed 's/-fields[^)]*)//gi'`
+    # deletes -fields entry which is not available nor necessary in reconstructParMesh
+    parMeshArg=`echo "$args" | sed 's/-fields[^)]*)//gi'`
 
-	f0=1;f3=0;
-		echo -n " reconstructParMesh $parMeshArg"
-        reconstructParMesh $parMeshArg  >/dev/null 2>&1; 
+    f0=1;f3=0;
+        echo -n " reconstructParMesh $parMeshArg"
+        reconstructParMesh $parMeshArg  >/dev/null 2>&1;
 
         echo -n " reconstructPar  $args"
-    #    reconstructPar "$@" >/dev/null 2>&1 
+       #reconstructPar "$@" >/dev/null 2>&1
         grep -q 'ERROR' <<< `reconstructPar "$@" 2>&1` && echo -n "\e[32m ERROR\033[0m"
 
-        echo  " reconstructParLevel  $args"
+        echo " reconstructParLevel  $args"
         reconstructParLevel "$@" >/dev/null 2>&1;
     f3=1;f0=0;
 }
@@ -93,28 +90,28 @@ function reconstructTimeStep()
 #- checks if and which time steps are left for reconstruction
 function createTimeListToReconstruct()
 {
-	echo "Create new List of time steps to reconstruct"
-	# find decomposed time steps
-	cd processor0
-		# get all folders which name begins with a number and sort them
-		decompTimeList=`ls -d [0-9]* | sort -g`;
-	cd -   >/dev/null 2>&1;
+    echo "Create new List of time steps to reconstruct"
+    # find decomposed time steps
+    cd processor0
+        # get all folders which name begins with a number and sort them
+        decompTimeList=`ls -d [0-9]* | sort -g`;
+    cd -   >/dev/null 2>&1;
 
-	# find reconstructed time steps
-	timeList=`ls -d [0-9]* | sort -g`
-	timeList=($timeList)
+    # find reconstructed time steps
+    timeList=`ls -d [0-9]* | sort -g`
+    timeList=($timeList)
 
-	#- check if and which time steps are left for reconstruction
-	reconstrList=(); timesLeft=false;
-	for line in $decompTimeList
-	do
-		containsElement "$line" "${timeList[@]}"
-		reconstruct=$?
-		if [ 0 != $reconstruct ]; then
-			reconstrList+=("$line");
-			timesLeft=true;
-		fi
-	done
+    #- check if and which time steps are left for reconstruction
+    reconstrList=(); timesLeft=false;
+    for line in $decompTimeList
+    do
+        containsElement "$line" "${timeList[@]}"
+        reconstruct=$?
+        if [ 0 != $reconstruct ]; then
+            reconstrList+=("$line");
+            timesLeft=true;
+        fi
+    done
 }
 
 #############################################################
@@ -129,27 +126,27 @@ args="$@"
 echo "Start: Args: $args"
 
 #- reconstruct time steps and check if new steps are created
-while $timesLeft   
+while $timesLeft
 do
-	count=0;
-	for timeStep in ${reconstrList[@]}
-	do
-		count=$(expr $count + 1);
-		echo -e "Reconstruct: $timeStep   \t$count/${#reconstrList[@]}"
+    count=0;
+    for timeStep in ${reconstrList[@]}
+    do
+        count=$(expr $count + 1);
+        echo -e "Reconstruct: $timeStep   \t$count/${#reconstrList[@]}"
 
-		sed -i "/startFrom/c\startFrom       startTime;" system/controlDict 
-		sed -i "/startTime /c\startTime      $timeStep ;" system/controlDict 
-		
-		reconstructTimeStep -time $timeStep "${@}"
+        sed -i "/startFrom/c\startFrom       startTime;" system/controlDict
+        sed -i "/startTime /c\startTime      $timeStep ;" system/controlDict
 
-		sed -i "/startFrom/c\startFrom       latestTime;" system/controlDict 
-		sed -i "/startTime /c\startTime      0;" system/controlDict 
-	done
+        reconstructTimeStep -time $timeStep "${@}"
 
-	sleep 1.5
+        sed -i "/startFrom/c\startFrom       latestTime;" system/controlDict
+        sed -i "/startTime /c\startTime      0;" system/controlDict
+    done
 
-	#- create new List of time steps
-	createTimeListToReconstruct
+    sleep 1.5
+
+    #- create new List of time steps
+    createTimeListToReconstruct
 done
 
 
@@ -157,7 +154,7 @@ echo "reconstruction finished in "$(($SECONDS / 60)) min and $(($SECONDS % 60)) 
 
 # remove temp file
 if [ -f logTmp ] ; then
-	rm logTmp;
+    rm logTmp;
 fi
 
 

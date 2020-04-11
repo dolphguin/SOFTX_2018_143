@@ -1,4 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # run from this directory
 
 # Source tutorial run functions
@@ -16,7 +21,7 @@ runApplication blockMesh
 
 initSurfaceFields
 
-meshUpdater 
+meshUpdater
 
 foamToVTK -surfaceFields > log.VTK
 
@@ -26,14 +31,14 @@ mv VTK VTK_new
 # original OF-4-dev dynMesh libs
 sh cleanCase.sh
 cp -r org 0
-runApplication blockMesh 
- 
-initSurfaceFields 
+runApplication blockMesh
+
+initSurfaceFields
 
 # ignore doublelinker
 echo "
 run meshUpdaterOrig"
-meshUpdaterOrig  >/dev/null 2>/dev/null |:
+meshUpdaterOrig >/dev/null 2>/dev/null |:
 
 echo "
 run foamToVTK"

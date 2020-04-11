@@ -1,4 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # run from this directory
 
 # Source tutorial run functions
@@ -32,14 +37,14 @@ runApplication blockMesh
 #         break;
 #     fi
 
-# 	# interfaceReconstruct on one TimeStep: use it if in dynamicMesDict a field is used 
+# 	# interfaceReconstruct on one TimeStep: use it if in dynamicMesDict a field is used
 # 	# which will be only available after reconstructing the interface e.g. isInterface
 # #	reconstructInterface -alphaName alpha.water -latestTime > log.reconstructInterface
 
 
 
 # 	# reads all available volFields to refine the mesh as specified in dynamicMeshDict
-# 	execRefinement -overwrite #> log.execRefinement 
+# 	execRefinement -overwrite #> log.execRefinement
 
 
 # done
@@ -52,7 +57,7 @@ setFields
 #- decompose case
 #faceMapper
 
-decomposePar 
+decomposePar
 
 mpirun -np 2 faceMapper -parallel
 

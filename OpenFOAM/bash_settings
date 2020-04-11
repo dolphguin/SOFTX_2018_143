@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Set installation path
+WM_PROJECT_DIR=/opt/openfoam6
+
+#Enable this in case of debugging (slower performance)
+#WM_COMPILE_OPTION=Debug

@@ -1,12 +1,16 @@
 #!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-
 #clean case
-cleanCase.sh
+../../scripts/cleanCase.sh
 
 # restore 0
 cp -r org/ 0
@@ -22,17 +26,17 @@ echo "TopoSet"
 topoSet >> log.topoSet
 
 echo "subsetMesh"
-subsetMesh -overwrite c0 -patch walls >> log.topoSet
+subsetMesh -overwrite c0 -patch walls >> log.subsetMesh
 
 # initialize field and set refinement repeatedly
 for count in {1..3}
 do
 
-	echo "setFields"
-	setFields >> log.topoSet
+    echo "setFields"
+    setFields >> log.$count.setFields
 
-	echo "meshUpdater"    
-	meshUpdater -overwrite #>> log.meshUpdater
+    echo "meshUpdater"
+    meshUpdater -overwrite >> log.$count.meshUpdater
 done
 
 # decompose with constraint refinementHistory

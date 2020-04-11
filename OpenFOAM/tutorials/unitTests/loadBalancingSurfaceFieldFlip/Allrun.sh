@@ -1,4 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+
+WM_PROJECT_DIR=/opt/openfoam6
+source $WM_PROJECT_DIR/etc/bashrc
+echo "version: " && foamVersion
+
 cd ${0%/*} || exit 1    # run from this directory
 
 # Source tutorial run functions

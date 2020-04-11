@@ -1,3 +1,5 @@
+AMR_LB_PROJECT=../../..
+
 EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
