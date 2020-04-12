@@ -40,7 +40,7 @@ Two unit cases illustrate the main bug fixes and several tutorial cases show pos
     - Ahmad Baniabedalruhman - Michigan Technological University ([2D refinement](http://faculty.yu.edu.jo/ahmad_a/Lists/Other%20Academic%20Activities/AllItems.aspx))
     - Stefan Batzdorf - Technical University Darmstadt ([`decomposeParLevel`](https://bitbucket.org/dynamicloadbalancing/dynamicloadbalancing/src/v-dev/OpenFOAM/applications/utilities/decomposeParLevel/decomposeParLevel.C))
     - Andrea Montorfano - Politecnico de Milano  (Discussions and hint for dontFlipPatch)
-    - myself - (by now, just porting code to OpenFOAM-6, OpenFOAM-7, testing stuff, and possibly include DLB-support for lagrangian particles from J.Peternel, that was originally inspired by the one by H.Jasak, H.Rusche &V.Vukcevic in [foam-extend]( https://github.com/Unofficial-Extend-Project-Mirror/foam-extend-foam-extend-4.0/tree/nextRelease ) )
+    - myself & P.Drobniak - (by now, just porting code to OpenFOAM-6, OpenFOAM-7, testing stuff, and possibly include DLB-support for lagrangian particles from J.Peternel, that was originally inspired by the one by H.Jasak, H.Rusche &V.Vukcevic in [foam-extend]( https://github.com/Unofficial-Extend-Project-Mirror/foam-extend-foam-extend-4.0/tree/nextRelease ) )
 
 * * *
 
