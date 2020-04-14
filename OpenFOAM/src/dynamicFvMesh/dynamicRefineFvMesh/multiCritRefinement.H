@@ -33,9 +33,9 @@ Description
     curls       (e.g. )
     interface   (e.g. alpha 0.5 iso-surface)
 
-    To be used with 
+    To be used with
         dynamicRefineFvMeshCoeffs.field multiCritRefinementField
-    and 
+    and
         multiCritRefinementControls
     Has no effect if the multiCritRefinementControls subdict doesnt exist.
 
@@ -55,7 +55,7 @@ Description
 
     This code has been developed by :
         Daniel Rettenmaier (main developer).
-    
+
     Method Development and Intellectual Property :
         Daniel Deising <deising@mma.tu-darmstadt.de>
         Daniel Rettenmaier <rettenmaier@gsc.tu-darmstadt.de>
@@ -69,7 +69,7 @@ Description
         Institute for Fluid Mechanics and Aerodynamics
         Center of Smart Interfaces
         Technische Universitaet Darmstadt
-       
+
     If you use this software for your scientific work or your publications,
     please don't forget to acknowledge explicitly the use of it.
 
@@ -127,9 +127,9 @@ private:
 
         //- list of all fields and their refinement criteria:
         //   minValue <= field <= maxValue
-        //   refinementLevel, nAddLayers                                                    
+        //   refinementLevel, nAddLayers
         HashTable< dictionary > fields_;
-        
+
         //- list of scalar fields of which the |gradient| serves as refinement criteria
         //  minValue <= mag(grad(field)) <= maxValue
         HashTable< dictionary > gradFields_;
@@ -145,8 +145,12 @@ private:
         //- regions can be set to be quasi-static refined
         PtrList<entry> refinedRegions_;
 
-        //- switch all criteria on or of
+        //- switch all criteria on or off
         Switch enableMultiCritRefinementControl_;
+
+        //- flag to enable/disable writing down isLevel,targetLevel & multiCritRefField
+        //  (true by default for backwards compatibility)
+        Switch writeDebugFields_;
 
         //- the number of buffer layers between three different refinement levels
         //  preferrably an even number
@@ -170,7 +174,7 @@ public:
 
         //- Constructor
             explicit multiCritRefinement(
-                    const labelList& cellLevel, 
+                    const labelList& cellLevel,
                     const fvMesh& mesh
             );
 
@@ -184,7 +188,7 @@ public:
         //- Disallow default bitwise copy construct
         multiCritRefinement(const multiCritRefinement&);
 
-        //- calculates the multiCritRefinementField 
+        //- calculates the multiCritRefinementField
         void updateRefinementField();
 
 

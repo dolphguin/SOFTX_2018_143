@@ -55,6 +55,9 @@ bool Foam::multiCritRefinement::readMultiCritRefinementDict()
         enableMultiCritRefinementControl_ =
             Switch(refineControlDict.lookup("enableMultiCritRefinementControl"));
 
+        writeDebugFields_ =
+            Switch(refineControlDict.lookupOrDefault("writeDebugFields",true));
+
         if( enableMultiCritRefinementControl_ )
         {
 
@@ -177,7 +180,7 @@ void Foam::multiCritRefinement::applyCritEntries(word critType, dictionary critD
             // BUT: do not decrease if cell already marked for higher refinement level by previous criterion
             targetLevel_[cellI] = max(targetLevel_[cellI], refineLevel);
         }
-    } 
+    }
 
     //- AddLayer Keyword
     scalar nAddLayers(0);
@@ -220,7 +223,7 @@ void Foam::multiCritRefinement::applyCritEntries(word critType, dictionary critD
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::multiCritRefinement::multiCritRefinement(
-    const labelList& cellLevel, 
+    const labelList& cellLevel,
     const fvMesh& mesh
 )
 :
@@ -236,6 +239,7 @@ Foam::multiCritRefinement::multiCritRefinement(
     interface_(),
     refinedRegions_(),
     enableMultiCritRefinementControl_(false),
+    writeDebugFields_(false),
     nBufferLayers_(0)
 {
     // Read static part of dictionary
@@ -249,7 +253,7 @@ Foam::multiCritRefinement::multiCritRefinement(
                 mesh.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::AUTO_WRITE
+                writeDebugFields_ ? IOobject::AUTO_WRITE : IOobject::NO_WRITE
             ),
             mesh_,
             dimensionedScalar("zero", dimless, 0.0)
@@ -263,7 +267,7 @@ Foam::multiCritRefinement::multiCritRefinement(
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::AUTO_WRITE
+                writeDebugFields_ ? IOobject::AUTO_WRITE : IOobject::NO_WRITE
             ),
             mesh_,
             dimensionedScalar("zero", dimless, 0.0)
@@ -277,12 +281,11 @@ Foam::multiCritRefinement::multiCritRefinement(
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::AUTO_WRITE
+                writeDebugFields_ ? IOobject::AUTO_WRITE : IOobject::NO_WRITE
             ),
             mesh_,
             dimensionedScalar("zero", dimless, 0.0)
         );
-    
 }
 
 
@@ -299,7 +302,7 @@ Foam::multiCritRefinement::~multiCritRefinement()
 void Foam::multiCritRefinement::updateRefinementField()
 {
 
-    if( !readMultiCritRefinementDict() ) 
+    if( !readMultiCritRefinementDict() )
     {
         return;
     }
@@ -345,18 +348,18 @@ void Foam::multiCritRefinement::updateRefinementField()
 
         forAll(fieldNames, i)
         {
-            
+
             word fldEntry = fieldNames[i];
 
             //- read criteria dict entries and calculate target level
-            applyCritEntries("field", fields_[fldEntry], fldEntry);            
+            applyCritEntries("field", fields_[fldEntry], fldEntry);
         }
     }
 
     // Then gradients
     {
         List<word> gradFieldNames = gradFields_.toc();
-        
+
         forAll(gradFieldNames, i)
         {
              word fldEntry = gradFieldNames[i];
@@ -375,7 +378,7 @@ void Foam::multiCritRefinement::updateRefinementField()
             word fldEntry = curlFieldNames[i];
 
             //- read criteria dict entries and calculate target level
-            applyCritEntries("curl", curlFields_[fldEntry], fldEntry);        
+            applyCritEntries("curl", curlFields_[fldEntry], fldEntry);
         }
     }
 
@@ -385,7 +388,7 @@ void Foam::multiCritRefinement::updateRefinementField()
         forAll(interfaceRefineField, i)
         {
             word fldName = interfaceRefineField[i];
-            
+
             // read region of maximum refinement levels inside and outside of interface indicator field
             // (does not need to be alpha, can also be a concentration field)
             scalar innerRefLayers = readScalar(interface_[fldName].lookup("innerRefLayers"));
@@ -447,14 +450,14 @@ void Foam::multiCritRefinement::updateRefinementField()
                    isInterface += neg(- fvc::average(fvc::interpolate(isInterface)) * pos(fld - fldInterfaceValue));
                    isInterface = neg(- isInterface);
                 }
-                
+
                 // add outer refinement layers
                 for(label i=0; i < outerRefLayers; i++)
                 {
                    isInterface += neg(- fvc::average(fvc::interpolate(isInterface)) * pos(fldInterfaceValue - fld));
                    isInterface = neg(- isInterface);
                 }
-                
+
                 forAll(isInterface, cellI)
                 {
                    if (isInterface[cellI] > 0.5)

@@ -20,7 +20,9 @@ dynamicFvMesh   dynamicRefineBalancedFvMesh;
 multiCritRefinementControls
 {
     enableMultiCritRefinementControl  true;
-    
+
+    writeDebugFields true;
+
     interface
     (
         alpha.water
@@ -41,15 +43,15 @@ multiCritRefinementControls
             nAddLayers  0;
         }*/
     );
-    
+
     gradients
     (
     );
-    
+
     curls
     (
     );
-    
+
     regions
     (
         /*boxToCell
